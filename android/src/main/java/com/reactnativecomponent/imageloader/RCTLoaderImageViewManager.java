@@ -110,15 +110,13 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
     AbstractDraweeControllerBuilder mDraweeControllerBuilder;
     private final @javax.annotation.Nullable
     Object mCallerContext;*/
-
-
     @Override
     public String getName() {
         return REACT_CLASS;
     }
 
     public RCTLoaderImageViewManager(Context context) {
-        this.context=context;
+        this.context = context;
 
 
       /*  if (config == null) {
@@ -140,7 +138,6 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
         mDraweeControllerBuilder = draweeControllerBuilder;
         mCallerContext = callerContext;
     }*/
-
 
 
     @Override
@@ -168,29 +165,30 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
     }
 
     private void initOptions() {
-        if(options==null){
+        if (options == null) {
 
 
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(getSplashId(loadingImage)) //设置图片在下载期间显示的图片
-                .showImageForEmptyUri(getSplashId(emptyUriImage))//设置图片Uri为空或是错误的时候显示的图片
-                .showImageOnFail(getSplashId(failImage))  //设置图片加载/解码过程中错误时候显示的图片
-                .cacheInMemory(cacheInMemory)//设置下载的图片是否缓存在内存中
-                .cacheOnDisc(cacheOnDisc)//设置下载的图片是否缓存在SD卡中
+            options = new DisplayImageOptions.Builder()
+                    .showImageOnLoading(getSplashId(loadingImage)) //设置图片在下载期间显示的图片
+                    .showImageForEmptyUri(getSplashId(emptyUriImage))//设置图片Uri为空或是错误的时候显示的图片
+                    .showImageOnFail(getSplashId(failImage))  //设置图片加载/解码过程中错误时候显示的图片
+                    .cacheInMemory(cacheInMemory)//设置下载的图片是否缓存在内存中
+                    .cacheOnDisc(cacheOnDisc)//设置下载的图片是否缓存在SD卡中
 //                    .considerExifParams(false)  //是否考虑JPEG图像EXIF参数（旋转，翻转）
-                .imageScaleType(ImageScaleType.EXACTLY)//设置图片以如何的编码方式显示
-                .bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
+                    .imageScaleType(ImageScaleType.EXACTLY)//设置图片以如何的编码方式显示
+                    .bitmapConfig(Bitmap.Config.RGB_565)//设置图片的解码类型//
 //.delayBeforeLoading(int delayInMillis)//int delayInMillis为你设置的下载前的延迟时间
 //设置图片加入缓存前，对bitmap进行设置
 //.preProcessor(BitmapProcessor preProcessor)
 //                    .resetViewBeforeLoading(true)//设置图片在下载前是否重置，复位
 //                    .displayer(new RoundedBitmapDisplayer(Round))//是否设置为圆角，弧度为多少
-                .displayer(new FadeInBitmapDisplayer(fadeInDuration))//是否图片加载好后渐入的动画时间
-                .build();//构建完成
+                    .displayer(new FadeInBitmapDisplayer(fadeInDuration))//是否图片加载好后渐入的动画时间
+                    .build();//构建完成
+        }
     }
-    }
+
     private void initConfig(Context reactContext) {
-        if(config==null) {
+        if (config == null) {
 //            Log.i("!Test", "creatImageLoader Config================threadSize:" + threadSize + ",loadingImage:" + loadingImage+"fadeInDuration:"+fadeInDuration);
             config = new ImageLoaderConfiguration.Builder(reactContext)
 //                    .memoryCacheExtraOptions(480, 800) // max width, max height，即保存的每个缓存文件的最大长宽
@@ -215,9 +213,9 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
 //                    .discCacheFileCount(100)
                     // 设置图片下载器
                     // 默认为 DefaultConfigurationFactory.createBitmapDisplayer()
-                    // .imageDownloader(
-                    // new HttpClientImageDownloader(getApplicationContext(),
-                    // new DefaultHttpClient()))
+                    .imageDownloader(
+                            new HttpClientImageDownloader(getApplicationContext(),
+                                    new DefaultHttpClient()))
                     // 设置图片解码器
                     // 默认为DefaultConfigurationFactory.createImageDecoder(false)
                     // .imageDecoder(DefaultConfigurationFactory.createImageDecoder(false))
@@ -313,8 +311,11 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
 
     }
 
-    *//**
+    */
+
+    /**
      * 图片路径
+     *
      * @param view
      * @param
      *//*
@@ -325,13 +326,12 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
         view.loaderImage(src, options);
     }
 */
-
     @ReactProp(name = "options")
     public void setData(RCTLoaderImageView view, ReadableMap map) {
-        if(map.hasKey("threadSize")) {
+        if (map.hasKey("threadSize")) {
             this.threadSize = map.getInt("threadSize");
         }
-        if(map.hasKey("fadeInDuration")) {
+        if (map.hasKey("fadeInDuration")) {
             this.fadeInDuration = map.getInt("fadeInDuration");
         }
 
@@ -357,7 +357,7 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
      * @return
      */
     private int getSplashId(String s) {
-        if (context != null&&s!=null&&!s.isEmpty()) {
+        if (context != null && s != null && !s.isEmpty()) {
             int drawableId = context.getResources().getIdentifier(s, "drawable", context.getClass().getPackage().getName());
             if (drawableId == 0) {
                 drawableId = context.getResources().getIdentifier(s, "drawable", context.getPackageName());
