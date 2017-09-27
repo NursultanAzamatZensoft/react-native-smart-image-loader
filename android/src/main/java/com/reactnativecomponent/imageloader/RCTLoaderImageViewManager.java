@@ -27,6 +27,19 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.nostra13.universalimageloader.utils.StorageUtils;
 
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+
 
 public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageView> {
     private static final String REACT_CLASS = "RCTLoaderImageView";//要与类名一致
@@ -189,6 +202,27 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
 
     private void initConfig(Context reactContext) {
         if (config == null) {
+            HttpParams params = new BasicHttpParams();
+            // Turn off stale checking. Our connections break all the time anyway,
+            // and it's not worth it to pay the penalty of checking every time.
+            HttpConnectionParams.setStaleCheckingEnabled(params, false);
+            // Default connection and socket timeout of 10 seconds. Tweak to taste.
+            HttpConnectionParams.setConnectionTimeout(params, 10 * 1000);
+            HttpConnectionParams.setSoTimeout(params, 10 * 1000);
+            HttpConnectionParams.setSocketBufferSize(params, 8192);
+
+            // Don't handle redirects -- return them to the caller. Our code
+            // often wants to re-POST after a redirect, which we must do ourselves.
+            HttpClientParams.setRedirecting(params, false);
+            // Set the specified user agent and register standard protocols.
+            HttpProtocolParams.setUserAgent(params, "some_randome_user_agent");
+            SchemeRegistry schemeRegistry = new SchemeRegistry();
+            schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+
+            ClientConnectionManager manager = new ThreadSafeClientConnManager(params, schemeRegistry);
+
+
 //            Log.i("!Test", "creatImageLoader Config================threadSize:" + threadSize + ",loadingImage:" + loadingImage+"fadeInDuration:"+fadeInDuration);
             config = new ImageLoaderConfiguration.Builder(reactContext)
 //                    .memoryCacheExtraOptions(480, 800) // max width, max height，即保存的每个缓存文件的最大长宽
@@ -213,9 +247,12 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
 //                    .discCacheFileCount(100)
                     // 设置图片下载器
                     // 默认为 DefaultConfigurationFactory.createBitmapDisplayer()
-                    .imageDownloader(
+                    /*
+                    *
                             new HttpClientImageDownloader(getApplicationContext(),
-                                    new DefaultHttpClient()))
+                                    new DefaultHttpClient())
+                                    */
+                    .imageDownloader(new HttpClientImageDownloader(reactContext, new DefaultHttpClient(manager, params)))
                     // 设置图片解码器
                     // 默认为DefaultConfigurationFactory.createImageDecoder(false)
                     // .imageDecoder(DefaultConfigurationFactory.createImageDecoder(false))
