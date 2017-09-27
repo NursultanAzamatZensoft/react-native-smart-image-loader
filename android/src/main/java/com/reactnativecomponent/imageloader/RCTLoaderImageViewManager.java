@@ -256,7 +256,7 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
                     .imageDownloader(new HttpClientImageDownloader(reactContext, new DefaultHttpClient(manager, params)))
                     // 设置图片解码器
                     // 默认为DefaultConfigurationFactory.createImageDecoder(false)
-                    .imageDecoder(DefaultConfigurationFactory.createImageDecoder(false))
+                    .imageDecoder(new NutraBaseImageDecoder(false))
 
                     // 设置默认的图片显示选项
                     // 默认为DisplayImageOptions.createSimple()
