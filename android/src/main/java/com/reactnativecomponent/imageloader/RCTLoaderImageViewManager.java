@@ -17,6 +17,7 @@ import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.views.image.ReactImageManager;
 import com.facebook.react.views.image.ReactImageView;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
+import com.nostra13.universalimageloader.core.DefaultConfigurationFactory;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -255,7 +256,7 @@ public class RCTLoaderImageViewManager extends SimpleViewManager<RCTLoaderImageV
                     .imageDownloader(new HttpClientImageDownloader(reactContext, new DefaultHttpClient(manager, params)))
                     // 设置图片解码器
                     // 默认为DefaultConfigurationFactory.createImageDecoder(false)
-                    // .imageDecoder(DefaultConfigurationFactory.createImageDecoder(false))
+                    .imageDecoder(DefaultConfigurationFactory.createImageDecoder(false))
 
                     // 设置默认的图片显示选项
                     // 默认为DisplayImageOptions.createSimple()
